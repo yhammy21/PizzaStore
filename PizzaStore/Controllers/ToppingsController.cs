@@ -37,6 +37,10 @@ namespace PizzaStore.Controllers
         [HttpPost]
         public IActionResult AddTopping(AddToppingDto addToppingDto)
         {
+            if(String.IsNullOrWhiteSpace(addToppingDto.ToppingName))
+            {
+                return UnprocessableEntity("Topping names must not be null or empty!");
+            }
             var newTopping = new Topping()
             { 
                 ToppingName = addToppingDto.ToppingName
@@ -56,7 +60,11 @@ namespace PizzaStore.Controllers
         [HttpPut]
         [Route("{id}")]
         public IActionResult UpdateTopping(int id, UpdateToppingDto updateToppingDto)
-        {
+        {         
+            if (String.IsNullOrWhiteSpace(updateToppingDto.ToppingName))
+            {
+                return UnprocessableEntity("Topping names must not be null or empty!");
+            }
             var updateTopping = dbContext.Toppings.Find(id);
 
             if (updateTopping != null)

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PizzaStore.Data;
 using PizzaStore.Models;
+using System.Text.RegularExpressions;
 
 
 namespace PizzaStore.Controllers
@@ -42,7 +43,22 @@ namespace PizzaStore.Controllers
         [HttpPost]
         public IActionResult AddPizza(AddPizzaDto addPizzaDto)
         {
-            var existingToppings = dbContext.Toppings.Where(t => addPizzaDto.ToppingIds.Contains(t.Id)).ToList();
+
+            if (String.IsNullOrWhiteSpace(addPizzaDto.PizzaName))
+            {
+                return UnprocessableEntity("Pizza names must not be null or empty!");
+            }
+
+            foreach (var toppingId in addPizzaDto.ToppingIds)
+            {
+                var isToppingIdsValid = Regex.IsMatch(toppingId, @"^\d+$");
+                if (!isToppingIdsValid)
+                {
+                    return UnprocessableEntity("Topping id value/s must be numbers only!");
+                }
+            }
+            var intToppingIds = addPizzaDto.ToppingIds.Select(int.Parse).ToList();
+            var existingToppings = dbContext.Toppings.Where(t => intToppingIds.Contains(t.Id)).ToList();            
             var newPizza = new Pizza()
             {
                 PizzaName = addPizzaDto.PizzaName,
@@ -55,7 +71,7 @@ namespace PizzaStore.Controllers
                 return UnprocessableEntity(addPizzaDto.PizzaName + " already exists!");
             }
 
-            foreach (var topping in addPizzaDto.ToppingIds)
+            foreach (var topping in intToppingIds)
             {
                 var doesToppingExist = dbContext.Toppings.Find(topping);
                 if (doesToppingExist == null)
@@ -75,7 +91,20 @@ namespace PizzaStore.Controllers
         [Route("{id}")]
         public IActionResult UpdatePizza(int id, UpdatePizzaDto updatePizzaDto)
         {
-            var existingToppings = dbContext.Toppings.Where(t => updatePizzaDto.ToppingIds.Contains(t.Id)).ToList();
+            if (String.IsNullOrWhiteSpace(updatePizzaDto.PizzaName))
+            {
+                return UnprocessableEntity("Pizza names must not be null or empty!");
+            }
+            foreach (var toppingId in updatePizzaDto.ToppingIds)
+            {
+                var isToppingIdsValid = Regex.IsMatch(toppingId, @"^\d+$");
+                if (!isToppingIdsValid)
+                {
+                    return UnprocessableEntity("Topping id value/s must be numbers only!");
+                }
+            }
+            var intToppingIds = updatePizzaDto.ToppingIds.Select(int.Parse).ToList();
+            var existingToppings = dbContext.Toppings.Where(t => intToppingIds.Contains(t.Id)).ToList();
             var updatePizza = dbContext.Pizzas.Find(id);
 
             if (updatePizza != null)
@@ -86,7 +115,7 @@ namespace PizzaStore.Controllers
                 {
                     return UnprocessableEntity(updatePizzaDto.PizzaName + " already exists!");
                 }
-                foreach (var topping in updatePizzaDto.ToppingIds)
+                foreach (var topping in intToppingIds)
                 {
                     var doesToppingExist = dbContext.Toppings.Find(topping);
                     if (doesToppingExist == null)
