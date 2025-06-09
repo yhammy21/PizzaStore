@@ -45,7 +45,11 @@ The **Package Manager Console** should say ``build succeeded..`` to then create 
 
 So, with that you have finally finished setting up and creating the Pizza Store App API's database using **Visual Studio** through the **Nuget Package Manager Console** using **EF Core**!
 
+## How to Use
+Now that the database is fully setup on your local machine, it is now time to run the Pizza Store App API and with that comes the explanation on how to run, use, and test the Pizza Store App API project, and of course, that includes the actual features and functionalities of the API itself, this goes both for the ***pizzas and toppings*** parts of the API, which are the only and main purpose of this Pizza Store App API.
 
+### Run the The Pizza Store App API
+To run the Pizza Store App API, once you have the Pizza Store App API project open in **Visual Studio**, go to the **top part of Visual Studio,**, and you should see a ***green play button***, and the string of text next to it should say ***https***, if not then click the drop down icon next to the ***green play button*** and a list should appear and select ***https***, as this was the launch settings profile used when the Pizza Store App API was being developed, and to ensure everything goes and works smoothly as much as possible.   
 
 
 
